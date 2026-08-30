@@ -800,6 +800,27 @@
         .pdf-footer .heart {
             color: #e87a8a;
         }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 8px 0;
+        }
+        .social-icons a {
+            color: #6b5a5a;
+            text-decoration: none;
+            font-size: 20px;
+            transition: 0.2s;
+        }
+        .social-icons a:hover {
+            color: #e87a8a;
+        }
+        .pdf-footer .social-icons a {
+            color: #6b5a5a;
+        }
+        .pdf-footer .social-icons a:hover {
+            color: #e87a8a;
+        }
     </style>
 </head>
 <body>
@@ -852,7 +873,7 @@
                     </div>
                     <div style="display:flex;flex-direction:column;gap:6px;">
                         <label id="eventTimeLabel">🕐 Час на събитие</label>
-                        <input type="time" id="eventTimeInput" value="18:00">
+                        <input type="time" id="eventTimeInput" value="18:00" step="60">
                     </div>
                     <div style="display:flex;flex-direction:column;gap:6px;">
                         <label id="commentLabel">📝 Коментар</label>
@@ -1374,42 +1395,36 @@
                 });
             }
 
-            // ===== 3 ШАБЛОНА =====
+            // ===== 3 ОБНОВЕНИ ШАБЛОНА =====
             const templates = {
                 classic: `
-                    <div class="pdf-header">
-                        <h1>✨ <span>Vega</span> Decoration</h1>
-                        <div class="subtitle">♡ ПАРТИ & ИВЕНТ ДИЗАЙН ♡</div>
+                    <div style="text-align:center;padding:20px 0 10px 0;border-bottom:2px solid #ddd;margin-bottom:20px;">
+                        <div style="font-size:42px;font-weight:100;letter-spacing:8px;color:#2d1b12;">VEGA</div>
+                        <div style="font-size:11px;letter-spacing:6px;text-transform:uppercase;color:#6b5a5a;margin-top:4px;">Decoration</div>
                     </div>
-                    
-                    <img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=800&h=300&fit=crop&crop=center" 
+
+                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=300&fit=crop&crop=center" 
                          alt="Elegant party arch decoration" 
-                         class="pdf-hero">
+                         style="width:100%;height:200px;object-fit:cover;border-radius:16px;margin:16px 0;filter:grayscale(100%);box-shadow:0 8px 30px rgba(0,0,0,0.08);">
                     
-                    <div class="pdf-quote-box">
-                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
-                            <div>
-                                <strong style="color:#2d1b12;font-size:20px;">📋 Оферта</strong>
-                                <div style="color:#6b5a5a;font-size:14px;margin-top:6px;">
-                                    Изготвена за: 
-                                    <strong style="color:#e87a8a;font-size:18px;display:block;margin-top:4px;">${eventName}</strong>
-                                </div>
-                                ${comment ? `<div style="color:#6b5a5a;font-size:13px;margin-top:4px;font-style:italic;">📝 ${comment}</div>` : ''}
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:13px;color:#6b5a5a;">Дата и час</div>
-                                <div style="font-weight:600;font-size:18px;color:#2d1b12;">${selectedDate} ${eventTime ? '· ' + eventTime : ''}</div>
-                            </div>
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin:16px 0;padding:16px;background:#f9f9f9;border-radius:12px;">
+                        <div>
+                            <div style="font-size:11px;text-transform:uppercase;color:#6b5a5a;letter-spacing:2px;">Оферта</div>
+                            <div style="font-size:22px;font-weight:300;color:#2d1b12;margin-top:2px;">${eventName}</div>
+                            ${comment ? `<div style="color:#6b5a5a;font-size:12px;margin-top:2px;">${comment}</div>` : ''}
+                        </div>
+                        <div style="text-align:right;font-size:13px;color:#6b5a5a;">
+                            ${selectedDate} ${eventTime ? '· ' + eventTime : ''}
                         </div>
                     </div>
 
-                    <table class="pdf-table">
+                    <table style="width:100%;border-collapse:collapse;margin:16px 0;">
                         <thead>
-                            <tr>
-                                <th>Артикул</th>
-                                <th style="text-align:center;">К-во</th>
-                                <th style="text-align:right;">Цена</th>
-                                <th style="text-align:right;">Общо</th>
+                            <tr style="border-bottom:2px solid #2d1b12;">
+                                <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">Артикул</th>
+                                <th style="padding:8px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">К-во</th>
+                                <th style="padding:8px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">Цена</th>
+                                <th style="padding:8px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">Общо</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1417,40 +1432,28 @@
                         </tbody>
                     </table>
 
-                    <div style="display:flex;justify-content:flex-end;align-items:center;gap:24px;padding:16px 0;border-top:2px solid #f0e6e6;margin-top:8px;">
-                        <div style="font-size:16px;color:#6b5a5a;font-weight:500;">Обща сума</div>
-                        <div class="pdf-total" style="font-size:36px;font-weight:800;color:#e87a8a;background:none;padding:0;margin:0;">
-                            ${grandTotal.toFixed(2)} €
+                    <div style="display:flex;justify-content:flex-end;padding:12px 0;border-top:2px solid #2d1b12;margin-top:8px;">
+                        <div style="text-align:right;">
+                            <div style="font-size:11px;color:#6b5a5a;text-transform:uppercase;letter-spacing:1px;">Обща сума</div>
+                            <div style="font-size:32px;font-weight:300;color:#e87a8a;">${grandTotal.toFixed(2)} €</div>
                         </div>
                     </div>
 
-                    <div style="display:flex;gap:30px;justify-content:center;padding:16px 0;margin:8px 0;border-top:1px solid #f0e6e6;border-bottom:1px solid #f0e6e6;font-size:13px;color:#6b5a5a;">
-                        <span>🎈 Балони</span>
-                        <span>🌸 Цветя</span>
-                        <span>✨ Осветление</span>
-                        <span>🎀 Декор</span>
-                    </div>
-
-                    <div class="pdf-footer">
-                        <p style="font-size:15px;">✨ Благодарим ви, че избрахте <strong style="color:#e87a8a;">Vega Decoration</strong> ✨</p>
-                        <p style="font-size:12px;margin-top:6px;">
-                            📞 +359 894 788 078
-                        </p>
-                        <p style="font-size:12px;margin-top:4px;">
-                            📱 <a href="https://instagram.com/vegadecoration" target="_blank" style="color:#e87a8a;text-decoration:none;">@vegadecoration</a> 
-                            &nbsp;|&nbsp; 
-                            📘 <a href="https://facebook.com/vegadecoration" target="_blank" style="color:#e87a8a;text-decoration:none;">Vega Decoration</a>
-                        </p>
-                        <p style="font-size:11px;margin-top:6px;opacity:0.7;">
-                            Създадено с <span class="heart">❤</span> от Vega Decoration • ${new Date().toLocaleDateString('bg-BG')}
-                        </p>
+                    <div style="text-align:center;color:#6b5a5a;font-size:11px;padding-top:16px;border-top:1px solid #eee;margin-top:16px;">
+                        <p>📞 +359 894 788 078</p>
+                        <div class="social-icons">
+                            <a href="https://instagram.com/vegadecoration" target="_blank">📷</a>
+                            <a href="https://facebook.com/vegadecoration" target="_blank">ⓕ</a>
+                        </div>
+                        <p style="margin-top:4px;opacity:0.5;">vega decoration • ${new Date().toLocaleDateString('bg-BG')}</p>
                     </div>
                 `,
 
                 modern: `
                     <div style="text-align:center;padding:20px 0;background:linear-gradient(135deg,#e87a8a,#c084d8);border-radius:16px;color:#fff;margin-bottom:20px;">
-                        <h1 style="font-size:38px;font-weight:800;letter-spacing:2px;color:#fff;">✨ VEGA DECORATION</h1>
-                        <div style="font-size:14px;letter-spacing:6px;text-transform:uppercase;opacity:0.9;">Парти & Ивент Дизайн</div>
+                        <div style="font-size:11px;letter-spacing:6px;text-transform:uppercase;opacity:0.8;">♡ Парти & Ивент Дизайн ♡</div>
+                        <h1 style="font-size:38px;font-weight:800;letter-spacing:2px;color:#fff;margin:8px 0;">VEGA</h1>
+                        <div style="font-size:13px;letter-spacing:4px;text-transform:uppercase;opacity:0.7;">Decoration</div>
                     </div>
                     
                     <div style="background:#fdf6f0;border-radius:16px;padding:20px;margin:16px 0;border-left:6px solid #c084d8;">
@@ -1494,13 +1497,12 @@
                     </div>
 
                     <div style="text-align:center;color:#6b5a5a;font-size:12px;padding-top:16px;border-top:1px solid #f0e6e6;margin-top:16px;">
-                        <p style="font-size:14px;">🌟 Благодарим за доверието! 🌟</p>
+                        <p style="font-size:14px;color:#c084d8;">🌟 Благодарим за доверието! 🌟</p>
                         <p style="margin-top:6px;">📞 +359 894 788 078</p>
-                        <p style="margin-top:4px;">
-                            📱 <a href="https://instagram.com/vegadecoration" target="_blank" style="color:#c084d8;text-decoration:none;">@vegadecoration</a> 
-                            &nbsp;|&nbsp; 
-                            📘 <a href="https://facebook.com/vegadecoration" target="_blank" style="color:#c084d8;text-decoration:none;">Vega Decoration</a>
-                        </p>
+                        <div class="social-icons">
+                            <a href="https://instagram.com/vegadecoration" target="_blank" style="font-size:24px;">📷</a>
+                            <a href="https://facebook.com/vegadecoration" target="_blank" style="font-size:24px;">ⓕ</a>
+                        </div>
                         <p style="margin-top:4px;opacity:0.6;">Създадено с ❤️ от Vega Decoration • ${new Date().toLocaleDateString('bg-BG')}</p>
                     </div>
                 `,
@@ -1545,9 +1547,10 @@
 
                     <div style="text-align:center;color:#6b5a5a;font-size:11px;padding-top:16px;border-top:1px solid #eee;margin-top:16px;">
                         <p>📞 +359 894 788 078</p>
-                        <p style="margin-top:4px;">
-                            📱 @vegadecoration &nbsp;·&nbsp; 📘 Vega Decoration
-                        </p>
+                        <div class="social-icons">
+                            <a href="https://instagram.com/vegadecoration" target="_blank">📷</a>
+                            <a href="https://facebook.com/vegadecoration" target="_blank">ⓕ</a>
+                        </div>
                         <p style="margin-top:4px;opacity:0.5;">vega decoration • ${new Date().toLocaleDateString('bg-BG')}</p>
                     </div>
                 `
@@ -1562,14 +1565,14 @@
                 <div style="text-align:center;margin-bottom:20px;padding:12px;background:#fdf6f0;border-radius:12px;">
                     <div style="font-size:13px;color:#6b5a5a;margin-bottom:8px;">🎨 Избери стил на офертата:</div>
                     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-                        <button onclick="selectTemplate('classic')" id="btn-classic" style="padding:6px 16px;border:2px solid ${templateChoice === 'classic' ? '#e87a8a' : '#ddd'};border-radius:20px;background:${templateChoice === 'classic' ? '#e87a8a' : '#fff'};color:${templateChoice === 'classic' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
-                            🌹 Класически
+                        <button onclick="selectTemplate('classic')" id="btn-classic" style="padding:6px 16px;border:2px solid ${templateChoice === 'classic' ? '#2d1b12' : '#ddd'};border-radius:20px;background:${templateChoice === 'classic' ? '#2d1b12' : '#fff'};color:${templateChoice === 'classic' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
+                            🖤 Класически
                         </button>
                         <button onclick="selectTemplate('modern')" id="btn-modern" style="padding:6px 16px;border:2px solid ${templateChoice === 'modern' ? '#c084d8' : '#ddd'};border-radius:20px;background:${templateChoice === 'modern' ? '#c084d8' : '#fff'};color:${templateChoice === 'modern' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
                             ✨ Модерен
                         </button>
-                        <button onclick="selectTemplate('minimal')" id="btn-minimal" style="padding:6px 16px;border:2px solid ${templateChoice === 'minimal' ? '#2d1b12' : '#ddd'};border-radius:20px;background:${templateChoice === 'minimal' ? '#2d1b12' : '#fff'};color:${templateChoice === 'minimal' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
-                            🖤 Минимален
+                        <button onclick="selectTemplate('minimal')" id="btn-minimal" style="padding:6px 16px;border:2px solid ${templateChoice === 'minimal' ? '#e87a8a' : '#ddd'};border-radius:20px;background:${templateChoice === 'minimal' ? '#e87a8a' : '#fff'};color:${templateChoice === 'minimal' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
+                            🌹 Минимален
                         </button>
                     </div>
                 </div>
@@ -1596,7 +1599,7 @@
                     });
                     const btn = document.getElementById('btn-' + template);
                     if (btn) {
-                        const colors = { classic: '#e87a8a', modern: '#c084d8', minimal: '#2d1b12' };
+                        const colors = { classic: '#2d1b12', modern: '#c084d8', minimal: '#e87a8a' };
                         btn.style.borderColor = colors[template];
                         btn.style.background = colors[template];
                         btn.style.color = '#fff';
@@ -1637,6 +1640,21 @@
                             .pdf-total { font-size: 36px; font-weight: 800; color: #e87a8a; }
                             .pdf-footer { text-align: center; color: #6b5a5a; font-size: 12px; padding-top: 16px; border-top: 1px solid #f0e6e6; margin-top: 16px; }
                             .pdf-footer .heart { color: #e87a8a; }
+                            .social-icons {
+                                display: flex;
+                                justify-content: center;
+                                gap: 20px;
+                                margin: 8px 0;
+                            }
+                            .social-icons a {
+                                color: #6b5a5a;
+                                text-decoration: none;
+                                font-size: 20px;
+                                transition: 0.2s;
+                            }
+                            .social-icons a:hover {
+                                color: #e87a8a;
+                            }
                             @media print {
                                 body { padding: 20px; background: #fff; }
                                 button { display: none !important; }
