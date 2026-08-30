@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#e87a8a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Vega Decoration – Party Planner & Quote Generator">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <title>🎈 Vega Decoration – Party Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: #fdf6f0;
+            color: #2d1b12;
+            transition: background 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 16px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body.dark {
+            background: #0b0e14;
+            color: #e0d6d6;
+        }
+        .app {
+            max-width: 960px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f0e6e6;
+            transition: background 0.3s, border 0.3s;
+        }
+        body.dark .app {
+            background: #1a141e;
+            border-color: #2f2838;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .top-bar .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .top-bar .right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d1b12;
+            transition: color 0.3s;
+            letter-spacing: -0.5px;
+        }
+        body.dark h1 {
+            color: #f0e6df;
+        }
+        .gold {
+            color: #e87a8a;
+        }
+        body.dark .gold {
+            color: #c084d8;
+        }
+        .badge {
+            background: #e87a8a;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 4px;
+        }
+        body.dark .badge {
+            background: #c084d8;
+            color: #0b0e14;
+        }
+        .sub {
+            color: #6b5a5a;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border-left: 3px solid #e87a8a;
+            padding-left: 12px;
+            font-style: italic;
+        }
+        body.dark .sub {
+            color: #b09cb0;
+            border-left-color: #c084d8;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #f0e6e6;
+            padding-bottom: 10px;
+        }
+        body.dark .tabs {
+            border-bottom-color: #2f2838;
+        }
+        .tab {
+            background: transparent;
+            border: none;
+            color: #6b5a5a;
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+            touch-action: manipulation;
+        }
+        body.dark .tab {
+            color: #b09cb0;
+        }
+        .tab.active {
+            background: #e87a8a;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(232, 122, 138, 0.2);
+        }
+        body.dark .tab.active {
+            background: #c084d8;
+            color: #0b0e14;
+            box-shadow: 0 4px 14px rgba(192, 132, 216, 0.25);
+        }
+        .tab:hover {
+            background: #f0e6e6;
+            color: #2d1b12;
+        }
+        body.dark .tab:hover {
+            background: #2f2838;
+            color: #f0e6df;
+        }
+        .panel {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        label {
+            display: block;
+            color: #6b4f3e;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 14px 0 4px 0;
+            text-transform: uppercase;
+        }
+        body.dark label {
+            color: #b09cb0;
+        }
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 12px;
+            background: #fff9f7;
+            border: 1.5px solid #f0e6e6;
+            border-radius: 14px;
+            color: #2d1b12;
+            font-size: 13px;
+            outline: none;
+            transition: background 0.3s, border 0.3s, color 0.3s;
+            font-family: inherit;
+            -webkit-appearance: none;
+        }
+        body.dark input,
+        body.dark select,
+        body.dark textarea {
+            background: #1a141e;
+            border-color: #2f2838;
+            color: #f0e6df;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #e87a8a;
+            box-shadow: 0 0 0 3px rgba(232, 122, 138, 0.12);
+        }
+        body.dark input:focus,
+        body.dark select:focus,
+        body.dark textarea:focus {
+            border-color: #c084d8;
+            box-shadow: 0 0 0 3px rgba(192, 132, 216, 0.15);
+        }
+        .btn {
+            background: linear-gradient(145deg, #e87a8a, #d46878);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 6px;
+            box-shadow: 0 4px 12px rgba(232, 122, 138, 0.15);
+            touch-action: manipulation;
+            font-family: inherit;
+        }
+        body.dark .btn {
+            background: linear-gradient(145deg, #c084d8, #a868c0);
+            box-shadow: 0 4px 12px rgba(192, 132, 216, 0.2);
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(232, 122, 138, 0.25);
+        }
+        body.dark .btn:hover {
+            box-shadow: 0 6px 20px rgba(192, 132, 216, 0.3);
+        }
+        .btn-sm {
+            background: #e87a8a;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 4px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            font-family: inherit;
+        }
+        body.dark .btn-sm {
+            background: #c084d8;
+            color: #0b0e14;
+        }
+        .btn-sm:hover {
+            background: #d46878;
+            transform: scale(1.02);
+        }
+        body.dark .btn-sm:hover {
+            background: #a868c0;
+        }
+        .btn-danger {
+            background: transparent;
+            border: 1px solid #e87a8a;
+            color: #e87a8a;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            font-family: inherit;
+        }
+        body.dark .btn-danger {
+            border-color: #c084d8;
+            color: #c084d8;
+        }
+        .btn-danger:hover {
+            background: #e87a8a;
+            color: #fff;
+        }
+        body.dark .btn-danger:hover {
+            background: #c084d8;
+            color: #0b0e14;
+        }
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .flex input {
+            flex: 1;
+            min-width: 100px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 12px;
+        }
+        .calendar-grid .day-name {
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+            color: #6b5a5a;
+            padding: 4px 0;
+        }
+        body.dark .calendar-grid .day-name {
+            color: #b09cb0;
+        }
+        .calendar-grid .day {
+            background: #fff9f7;
+            border-radius: 12px;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d1b12;
+            border: 1px solid #f0e6e6;
+            cursor: pointer;
+            transition: 0.2s;
+            min-height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        body.dark .calendar-grid .day {
+            background: #1a141e;
+            border-color: #2f2838;
+            color: #f0e6df;
+        }
+        .calendar-grid .day:hover {
+            background: #f0e6e6;
+            border-color: #e87a8a;
+        }
+        body.dark .calendar-grid .day:hover {
+            background: #2f2838;
+            border-color: #c084d8;
+        }
+        .calendar-grid .day.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+        .calendar-grid .day .badge-count {
+            font-size: 9px;
+            background: #e87a8a;
+            color: #fff;
+            border-radius: 30px;
+            padding: 0 6px;
+            margin-top: 2px;
+        }
+        body.dark .calendar-grid .day .badge-count {
+            background: #c084d8;
+            color: #0b0e14;
+        }
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .calendar-nav .month-year {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .calendar-nav button {
+            background: none;
+            border: 1px solid #f0e6e6;
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            font-family: inherit;
+            color: inherit;
+        }
+        body.dark .calendar-nav button {
+            border-color: #2f2838;
+            color: #f0e6df;
+        }
+        .calendar-nav button:hover {
+            background: #f0e6e6;
+        }
+        body.dark .calendar-nav button:hover {
+            background: #2f2838;
+        }
+        .day-checklist {
+            margin-top: 16px;
+            padding: 16px;
+            background: #fff9f7;
+            border-radius: 16px;
+            border: 1px solid #f0e6e6;
+        }
+        body.dark .day-checklist {
+            background: #1a141e;
+            border-color: #2f2838;
+        }
+        .day-checklist .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0e6e6;
+        }
+        body.dark .day-checklist .checklist-item {
+            border-bottom-color: #2f2838;
+        }
+        .day-checklist .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .day-checklist .checklist-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #e87a8a;
+            flex-shrink: 0;
+        }
+        body.dark .day-checklist .checklist-item input[type="checkbox"] {
+            accent-color: #c084d8;
+        }
+        .day-checklist .checklist-item input[type="number"] {
+            width: 50px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: 1px solid #f0e6e6;
+            background: #fff;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        body.dark .day-checklist .checklist-item input[type="number"] {
+            background: #0b0e14;
+            border-color: #2f2838;
+            color: #f0e6df;
+        }
+        .day-checklist .checklist-item .item-name {
+            flex: 1;
+            font-size: 13px;
+        }
+        .history-item {
+            background: #fff9f7;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            border: 1px solid #f0e6e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        body.dark .history-item {
+            background: #1a141e;
+            border-color: #2f2838;
+        }
+        .history-item .h-info {
+            font-size: 13px;
+        }
+        .history-item .h-info .h-date {
+            font-weight: 600;
+        }
+        .history-item .h-info .h-event {
+            color: #e87a8a;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .history-item .h-info .h-comment {
+            color: #6b5a5a;
+            font-size: 12px;
+        }
+        body.dark .history-item .h-info .h-event {
+            color: #c084d8;
+        }
+        body.dark .history-item .h-info .h-comment {
+            color: #b09cb0;
+        }
+        .history-item .h-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .total-box {
+            background: linear-gradient(145deg, #e87a8a, #d46878);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+            margin-top: 12px;
+        }
+        body.dark .total-box {
+            background: linear-gradient(145deg, #c084d8, #a868c0);
+            color: #0b0e14;
+        }
+        .empty-state {
+            color: #6b5a5a;
+            font-size: 13px;
+            padding: 16px 0;
+            text-align: center;
+        }
+        body.dark .empty-state {
+            color: #b09cb0;
+        }
+        .theme-toggle {
+            background: none;
+            border: 1px solid #f0e6e6;
+            border-radius: 30px;
+            padding: 3px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            touch-action: manipulation;
+            font-family: inherit;
+        }
+        body.dark .theme-toggle {
+            border-color: #2f2838;
+        }
+        .lang-select {
+            background: transparent;
+            border: 1px solid #f0e6e6;
+            border-radius: 30px;
+            padding: 3px 10px;
+            font-size: 12px;
+            color: #2d1b12;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        body.dark .lang-select {
+            border-color: #2f2838;
+            color: #f0e6df;
+        }
+        .lang-select option {
+            background: #ffffff;
+            color: #2d1b12;
+        }
+        body.dark .lang-select option {
+            background: #1a141e;
+            color: #f0e6df;
+        }
+        #checklistComment,
+        #eventNameInput {
+            min-height: 50px;
+            resize: vertical;
+            font-size: 14px;
+            padding: 10px 14px;
+        }
+        #eventNameInput {
+            min-height: 40px;
+            font-weight: 600;
+        }
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(232, 122, 138, 0.05);
+            border-radius: 12px;
+            border: 1px dashed #f0e6e6;
+        }
+        body.dark .info-section {
+            background: rgba(192, 132, 216, 0.05);
+            border-color: #2f2838;
+        }
+        .info-section label {
+            margin: 0;
+            font-size: 10px;
+        }
+        .comment-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .comment-section .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .install-banner {
+            display: none;
+            background: linear-gradient(135deg, #e87a8a, #d46878);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        body.dark .install-banner {
+            background: linear-gradient(135deg, #c084d8, #a868c0);
+            color: #0b0e14;
+        }
+        .install-banner.show {
+            display: flex;
+        }
+        .install-banner button {
+            background: #fff;
+            color: #e87a8a;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            touch-action: manipulation;
+        }
+        body.dark .install-banner button {
+            color: #c084d8;
+        }
+        @media print {
+            body {
+                background: #fff !important;
+                padding: 0 !important;
+            }
+            .app {
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 20px !important;
+            }
+            .top-bar .right,
+            .tabs,
+            .tab,
+            .btn,
+            .btn-sm,
+            .btn-danger,
+            .calendar-nav button,
+            .h-actions,
+            .no-print,
+            .install-banner {
+                display: none !important;
+            }
+            .panel {
+                display: block !important;
+            }
+            .panel:not(.active) {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .calendar-grid .day {
+                border: 1px solid #ddd !important;
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .day-checklist {
+                border: 1px solid #ddd !important;
+                background: #fff !important;
+            }
+            .total-box {
+                background: #e87a8a !important;
+                color: #fff !important;
+            }
+        }
+        .print-only {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .app {
+                padding: 16px 14px;
+            }
+            .calendar-grid {
+                gap: 2px;
+            }
+            .calendar-grid .day {
+                font-size: 12px;
+                min-height: 36px;
+                padding: 4px 2px;
+            }
+            .flex input {
+                min-width: 70px;
+            }
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+        }
+        /* PDF styles */
+        .pdf-header {
+            text-align: center;
+            padding: 20px 0 10px 0;
+            border-bottom: 3px double #e87a8a;
+            margin-bottom: 20px;
+        }
+        .pdf-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #2d1b12;
+            text-shadow: 2px 2px 4px rgba(232, 122, 138, 0.2);
+        }
+        .pdf-header h1 span {
+            color: #e87a8a;
+        }
+        .pdf-header .subtitle {
+            font-size: 14px;
+            color: #6b5a5a;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .pdf-hero {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin: 16px 0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        .pdf-quote-box {
+            background: linear-gradient(135deg, #fdf6f0, #fce8ec);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 16px 0;
+            border-left: 6px solid #e87a8a;
+        }
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .pdf-table th {
+            background: linear-gradient(135deg, #e87a8a, #d46878);
+            color: #fff;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        .pdf-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f0e6e6;
+        }
+        .pdf-table tr:last-child td {
+            border-bottom: none;
+        }
+        .pdf-table tr:hover {
+            background: #fdf6f0;
+        }
+        .pdf-total {
+            font-size: 28px;
+            font-weight: 800;
+            color: #e87a8a;
+            text-align: right;
+            padding: 16px;
+            background: #fdf6f0;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        .pdf-footer {
+            text-align: center;
+            color: #6b5a5a;
+            font-size: 12px;
+            padding-top: 16px;
+            border-top: 1px solid #f0e6e6;
+            margin-top: 16px;
+        }
+        .pdf-footer .heart {
+            color: #e87a8a;
+        }
+        .offline-indicator {
+            display: none;
+            background: #ff9800;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .offline-indicator.show {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="top-bar">
+            <div class="left">
+                <h1>🎈 <span class="gold">Vega</span> Decoration</h1>
+                <span class="badge">✨ v2.0</span>
+                <span class="offline-indicator" id="offlineIndicator">📡 Offline</span>
+            </div>
+            <div class="right no-print">
+                <button class="theme-toggle" id="themeToggle">🌗</button>
+                <select class="lang-select" id="langSelect">
+                    <option value="en">🇬🇧 EN</option>
+                    <option value="bg">🇧🇬 BG</option>
+                </select>
+            </div>
+        </div>
+        <div class="sub" id="subtitle">🌸 Календар, чеклисти, история и PDF оферти</div>
+
+        <!-- Install Banner -->
+        <div class="install-banner" id="installBanner">
+            <span>📲 Инсталирай приложението</span>
+            <button id="installBtn">Инсталирай</button>
+        </div>
+
+        <div class="tabs no-print">
+            <button class="tab active" data-tab="tab1" id="tab1Label">📅 Календар</button>
+            <button class="tab" data-tab="tab2" id="tab2Label">📂 История</button>
+            <button class="tab" data-tab="tab3" id="tab3Label">📦 Инвентар</button>
+        </div>
+
+        <!-- TAB 1: CALENDAR -->
+        <div id="tab1" class="panel active">
+            <div class="calendar-nav">
+                <button id="prevMonth">◀</button>
+                <span class="month-year" id="monthYear">September 2026</span>
+                <button id="nextMonth">▶</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div id="dayChecklistContainer" class="day-checklist" style="display:none;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+                    <h3 id="dayLabel">📋 Чеклист за 12.09.2026</h3>
+                    <button class="btn-sm no-print" id="newChecklistBtn">➕ Нов</button>
+                </div>
+
+                <div class="info-section no-print">
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <label id="eventNameLabel">🏷️ Име на събитие</label>
+                        <input type="text" id="eventNameInput" placeholder="Напр. Сватба Иванова, Рожден ден на Петър...">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <label id="commentLabel">📝 Коментар</label>
+                        <textarea id="checklistComment" placeholder="Допълнителни бележки, място, забележки..." rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div id="checklistItems"></div>
+
+                <div class="comment-section no-print">
+                    <div class="btn-row">
+                        <button class="btn-sm" id="saveChecklistBtn">💾 Запази</button>
+                        <button class="btn-sm" id="pdfQuoteBtn" style="background:#c084d8;">📄 PDF Оферта</button>
+                    </div>
+                </div>
+
+                <div class="total-box" id="dayTotal">💰 Общо: 0.00 EUR</div>
+                <div id="dayChecklistList" style="margin-top:10px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: HISTORY -->
+        <div id="tab2" class="panel">
+            <div id="historyList"></div>
+        </div>
+
+        <!-- TAB 3: INVENTORY -->
+        <div id="tab3" class="panel">
+            <label id="lblAddItem">✨ Добави артикул</label>
+            <div class="flex">
+                <input type="text" id="itemName" placeholder="Име на артикул" style="flex:2;">
+                <input type="number" id="itemPrice" placeholder="Цена (EUR)" step="0.01" style="flex:1;">
+                <button class="btn-sm" id="addItemBtn">+ Добави</button>
+            </div>
+            <div id="inventoryList" style="margin-top:12px;"></div>
+            <div style="margin-top:8px;font-size:12px;color:#6b5a5a;" id="invCount">0 артикула</div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SERVICE WORKER REGISTRATION =====
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('SW registered'))
+                .catch(() => console.log('SW registration failed'));
+        }
+
+        // ===== OFFLINE INDICATOR =====
+        const offlineIndicator = document.getElementById('offlineIndicator');
+        window.addEventListener('online', () => {
+            offlineIndicator.classList.remove('show');
+        });
+        window.addEventListener('offline', () => {
+            offlineIndicator.classList.add('show');
+        });
+        if (!navigator.onLine) {
+            offlineIndicator.classList.add('show');
+        }
+
+        // ===== INSTALL BANNER =====
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.classList.add('show');
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                if (result.outcome === 'accepted') {
+                    installBanner.classList.remove('show');
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBanner.classList.remove('show');
+        });
+
+        // ===== THEME =====
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light');
+            body.classList.remove('dark');
+        } else {
+            body.classList.add('dark');
+            body.classList.remove('light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light');
+            body.classList.toggle('dark');
+            localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+        });
+
+        // ===== LANGUAGE =====
+        const lang = {
+            en: {
+                subtitle: '🌸 Calendar, checklists, history & PDF quotes',
+                lblAddItem: '✨ Add item',
+                invCount: 'items',
+                tab1: '📅 Calendar',
+                tab2: '📂 History',
+                tab3: '📦 Inventory',
+                emptyInv: '🌸 No items added yet.',
+                emptyHistory: '🌸 No saved checklists yet.',
+                noChecklist: 'Select a date to view or create a checklist.',
+                addBtn: '+ Add',
+                deleteBtn: '✕',
+                total: '💰 Total',
+                pdfBtn: '📄 PDF Quote',
+                saveBtn: '💾 Save',
+                newBtn: '➕ New',
+                eventNameLabel: '🏷️ Event Name',
+                commentLabel: '📝 Comment',
+                eventNamePlaceholder: 'e.g. Wedding Ivanova, Peter\'s Birthday...',
+                commentPlaceholder: 'Additional notes, venue, remarks...',
+                dayLabel: '📋 Checklist for ',
+                noChecklistText: 'No checklist for this date. Click "New" to create one.',
+                preparedFor: 'Prepared for:'
+            },
+            bg: {
+                subtitle: '🌸 Календар, чеклисти, история и PDF оферти',
+                lblAddItem: '✨ Добави артикул',
+                invCount: 'артикула',
+                tab1: '📅 Календар',
+                tab2: '📂 История',
+                tab3: '📦 Инвентар',
+                emptyInv: '🌸 Все още няма добавени артикули.',
+                emptyHistory: '🌸 Все още няма запазени чеклисти.',
+                noChecklist: 'Избери дата, за да видиш или създадеш чеклист.',
+                addBtn: '+ Добави',
+                deleteBtn: '✕',
+                total: '💰 Общо',
+                pdfBtn: '📄 PDF Оферта',
+                saveBtn: '💾 Запази',
+                newBtn: '➕ Нов',
+                eventNameLabel: '🏷️ Име на събитие',
+                commentLabel: '📝 Коментар',
+                eventNamePlaceholder: 'Напр. Сватба Иванова, Рожден ден на Петър...',
+                commentPlaceholder: 'Допълнителни бележки, място, забележки...',
+                dayLabel: '📋 Чеклист за ',
+                noChecklistText: 'Няма чеклист за тази дата. Натисни "Нов", за да създадеш.',
+                preparedFor: 'Изготвена за:'
+            }
+        };
+
+        let currentLang = 'bg';
+        const langSelect = document.getElementById('langSelect');
+        langSelect.value = 'bg';
+
+        langSelect.addEventListener('change', function() {
+            currentLang = this.value;
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            const l = lang[currentLang];
+            document.getElementById('subtitle').textContent = l.subtitle;
+            document.getElementById('lblAddItem').textContent = l.lblAddItem;
+            document.getElementById('tab1Label').textContent = l.tab1;
+            document.getElementById('tab2Label').textContent = l.tab2;
+            document.getElementById('tab3Label').textContent = l.tab3;
+            document.getElementById('addItemBtn').textContent = l.addBtn;
+            document.getElementById('itemName').placeholder = currentLang === 'bg' ? 'Име на артикул' : 'Item name';
+            document.getElementById('itemPrice').placeholder = currentLang === 'bg' ? 'Цена (EUR)' : 'Price (EUR)';
+            document.getElementById('eventNameInput').placeholder = l.eventNamePlaceholder;
+            document.getElementById('checklistComment').placeholder = l.commentPlaceholder;
+            document.getElementById('eventNameLabel').textContent = l.eventNameLabel;
+            document.getElementById('commentLabel').textContent = l.commentLabel;
+            document.getElementById('saveChecklistBtn').textContent = l.saveBtn;
+            document.getElementById('pdfQuoteBtn').textContent = l.pdfBtn;
+            document.getElementById('newChecklistBtn').textContent = l.newBtn;
+
+            if (selectedDate) {
+                document.getElementById('dayLabel').textContent = l.dayLabel + selectedDate;
+            }
+
+            renderInventory();
+            renderCalendar();
+            renderHistory();
+            renderDayChecklist();
+        }
+
+        // ===== TABS =====
+        document.querySelectorAll('.tab').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.getElementById(this.dataset.tab).classList.add('active');
+                if (this.dataset.tab === 'tab2') renderHistory();
+                if (this.dataset.tab === 'tab3') renderInventory();
+            });
+        });
+
+        // ===== INVENTORY =====
+        let items = JSON.parse(localStorage.getItem('inventoryItems')) || [];
+
+        function renderInventory() {
+            const container = document.getElementById('inventoryList');
+            const l = lang[currentLang];
+            if (!items.length) {
+                container.innerHTML = `<div class="empty-state">${l.emptyInv}</div>`;
+                document.getElementById('invCount').textContent = `0 ${l.invCount}`;
+                return;
+            }
+            container.innerHTML = items.map((item, idx) =>
+                `<div style="display:flex;justify-content:space-between;align-items:center;background:#fff9f7;padding:6px 14px;border-radius:14px;margin-bottom:4px;border:1px solid #f0e6e6;">
+                    <span>${item.name}</span>
+                    <span style="font-weight:600;color:#e87a8a;">${item.price.toFixed(2)} EUR</span>
+                    <button class="btn-danger" onclick="deleteItem(${idx})">${l.deleteBtn}</button>
+                </div>`
+            ).join('');
+            document.getElementById('invCount').textContent = `${items.length} ${l.invCount}`;
+            localStorage.setItem('inventoryItems', JSON.stringify(items));
+        }
+
+        document.getElementById('addItemBtn').addEventListener('click', function() {
+            const nameInput = document.getElementById('itemName');
+            const priceInput = document.getElementById('itemPrice');
+            const name = nameInput.value.trim();
+            const price = parseFloat(priceInput.value);
+            if (!name || isNaN(price) || price <= 0) return;
+            items.push({ name, price });
+            nameInput.value = '';
+            priceInput.value = '';
+            renderInventory();
+        });
+
+        window.deleteItem = function(idx) {
+            items.splice(idx, 1);
+            renderInventory();
+        };
+
+        // ===== CALENDAR =====
+        let currentDate = new Date();
+        let selectedDate = null;
+        let checklists = JSON.parse(localStorage.getItem('partyChecklists')) || {};
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthYear = document.getElementById('monthYear');
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today
+                .getDate()).padStart(2, '0');
+
+            monthYear.textContent = new Date(year, month).toLocaleString(currentLang === 'bg' ? 'bg-BG' : 'en-US', {
+                month: 'long',
+                year: 'numeric'
+            });
+
+            let html = '';
+            const dayNames = currentLang === 'bg' ?
+                ['Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб', 'Нед'] :
+                ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            let startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+            for (let i = 0; i < 7; i++) {
+                html += `<div class="day-name">${dayNames[i]}</div>`;
+            }
+
+            for (let i = 0; i < startOffset; i++) {
+                html += `<div class="day empty"></div>`;
+            }
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+                const hasChecklist = checklists[dateStr] && checklists[dateStr].length > 0;
+                const count = hasChecklist ? checklists[dateStr].length : 0;
+                const isToday = dateStr === todayStr;
+                html += `<div class="day" style="${isToday ? 'border-color:#e87a8a;border-width:2px;' : ''}" onclick="selectDate('${dateStr}')">
+                            ${d}
+                            ${count > 0 ? `<span class="badge-count">${count}</span>` : ''}
+                        </div>`;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        window.selectDate = function(dateStr) {
+            selectedDate = dateStr;
+            document.getElementById('dayChecklistContainer').style.display = 'block';
+            const l = lang[currentLang];
+            document.getElementById('dayLabel').textContent = l.dayLabel + dateStr;
+            renderDayChecklist();
+        };
+
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        // ===== DAY CHECKLIST =====
+        function renderDayChecklist() {
+            const container = document.getElementById('checklistItems');
+            const listContainer = document.getElementById('dayChecklistList');
+            const totalBox = document.getElementById('dayTotal');
+            const l = lang[currentLang];
+
+            if (!selectedDate) {
+                container.innerHTML = `<div class="empty-state">${l.noChecklist}</div>`;
+                listContainer.innerHTML = '';
+                totalBox.textContent = `${l.total}: 0.00 EUR`;
+                return;
+            }
+
+            const dayChecklists = checklists[selectedDate] || [];
+            if (dayChecklists.length === 0) {
+                container.innerHTML = `<div class="empty-state">${l.noChecklistText}</div>`;
+                listContainer.innerHTML = '';
+                totalBox.textContent = `${l.total}: 0.00 EUR`;
+                document.getElementById('eventNameInput').value = '';
+                document.getElementById('checklistComment').value = '';
+                return;
+            }
+
+            const current = dayChecklists[dayChecklists.length - 1];
+            let html = '';
+            let total = 0;
+            if (current.items) {
+                current.items.forEach((item, idx) => {
+                    const checked = item.checked ? 'checked' : '';
+                    const qty = item.quantity || 1;
+                    const lineTotal = checked ? (item.price * qty) : 0;
+                    total += lineTotal;
+                    html += `<div class="checklist-item">
+                                <input type="checkbox" ${checked} onchange="toggleItem(${idx}, this.checked)">
+                                <span class="item-name">${item.name}</span>
+                                <input type="number" value="${qty}" min="1" step="1" onchange="updateItemQty(${idx}, this.value)">
+                                <span style="font-weight:600;color:#e87a8a;">${(item.price * qty).toFixed(2)} EUR</span>
+                            </div>`;
+                });
+            }
+            container.innerHTML = html;
+            totalBox.textContent = `${l.total}: ${total.toFixed(2)} EUR`;
+
+            document.getElementById('eventNameInput').value = current.eventName || '';
+            document.getElementById('checklistComment').value = current.comment || '';
+
+            listContainer.innerHTML = dayChecklists.map((cl, idx) =>
+                `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f0e6e6;">
+                    <span style="font-size:13px;">
+                        <strong>${cl.eventName || 'Без име'}</strong> 
+                        ${cl.comment ? `– ${cl.comment}` : ''} 
+                        (${cl.total ? cl.total.toFixed(2) : '0.00'} EUR)
+                    </span>
+                    <div>
+                        <button class="btn-sm" onclick="loadChecklist(${idx})" style="font-size:10px;">📂 Load</button>
+                        <button class="btn-danger" onclick="deleteChecklist(${idx})" style="font-size:10px;">${l.deleteBtn}</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        window.toggleItem = function(idx, checked) {
+            const dayChecklists = checklists[selectedDate] || [];
+            if (!dayChecklists.length) return;
+            const current = dayChecklists[dayChecklists.length - 1];
+            current.items[idx].checked = checked;
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+            renderDayChecklist();
+        };
+
+        window.updateItemQty = function(idx, value) {
+            const qty = parseInt(value) || 1;
+            if (qty < 1) return;
+            const dayChecklists = checklists[selectedDate] || [];
+            if (!dayChecklists.length) return;
+            const current = dayChecklists[dayChecklists.length - 1];
+            current.items[idx].quantity = qty;
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+            renderDayChecklist();
+        };
+
+        window.loadChecklist = function(idx) {
+            const dayChecklists = checklists[selectedDate] || [];
+            if (!dayChecklists.length) return;
+            const selected = dayChecklists.splice(idx, 1)[0];
+            dayChecklists.push(selected);
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+            renderDayChecklist();
+        };
+
+        window.deleteChecklist = function(idx) {
+            if (!confirm(currentLang === 'bg' ? 'Изтриване на чеклиста?' : 'Delete this checklist?')) return;
+            const dayChecklists = checklists[selectedDate] || [];
+            if (!dayChecklists.length) return;
+            dayChecklists.splice(idx, 1);
+            if (dayChecklists.length === 0) {
+                delete checklists[selectedDate];
+            } else {
+                checklists[selectedDate] = dayChecklists;
+            }
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+            renderDayChecklist();
+        };
+
+        document.getElementById('newChecklistBtn').addEventListener('click', function() {
+            if (!selectedDate) return;
+            if (!checklists[selectedDate]) checklists[selectedDate] = [];
+            const newChecklist = {
+                items: items.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1,
+                    checked: false
+                })),
+                eventName: '',
+                comment: '',
+                total: 0,
+                date: selectedDate,
+                created: new Date().toISOString()
+            };
+            checklists[selectedDate].push(newChecklist);
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+            renderDayChecklist();
+        });
+
+        document.getElementById('saveChecklistBtn').addEventListener('click', function() {
+            if (!selectedDate) return;
+            const dayChecklists = checklists[selectedDate] || [];
+            if (!dayChecklists.length) return;
+            const current = dayChecklists[dayChecklists.length - 1];
+            const eventName = document.getElementById('eventNameInput').value.trim();
+            const comment = document.getElementById('checklistComment').value.trim();
+            current.eventName = eventName;
+            current.comment = comment;
+            let total = 0;
+            if (current.items) {
+                current.items.forEach(item => {
+                    if (item.checked) {
+                        total += (item.price * (item.quantity || 1));
+                    }
+                });
+            }
+            current.total = total;
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+            renderDayChecklist();
+        });
+
+        // ===== PDF QUOTE =====
+        document.getElementById('pdfQuoteBtn').addEventListener('click', function() {
+            if (!selectedDate) return;
+            const dayChecklists = checklists[selectedDate] || [];
+            if (!dayChecklists.length) return;
+            const current = dayChecklists[dayChecklists.length - 1];
+
+            const eventName = document.getElementById('eventNameInput').value.trim();
+            const comment = document.getElementById('checklistComment').value.trim();
+            current.eventName = eventName;
+            current.comment = comment;
+            localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+
+            let grandTotal = 0;
+            let itemsHtml = '';
+            if (current.items) {
+                current.items.forEach(item => {
+                    if (item.checked) {
+                        const qty = item.quantity || 1;
+                        const total = item.price * qty;
+                        grandTotal += total;
+                        itemsHtml += `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td style="text-align:center;">${qty}</td>
+                                <td style="text-align:right;">${item.price.toFixed(2)} €</td>
+                                <td style="text-align:right;font-weight:600;color:#e87a8a;">${total.toFixed(2)} €</td>
+                            </tr>
+                        `;
+                    }
+                });
+            }
+
+            const isBg = currentLang === 'bg';
+            const eventDisplay = current.eventName || (isBg ? 'Без име на събитие' : 'No event name');
+
+            const pdfContent = `
+                <div class="pdf-header">
+                    <h1>✨ <span>Vega</span> Decoration</h1>
+                    <div class="subtitle">✧ ${isBg ? 'Парти & Ивент Дизайн' : 'Party & Event Design'} ✧</div>
+                </div>
+                
+                <img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=800&h=300&fit=crop&crop=center" 
+                     alt="Elegant party arch decoration" 
+                     class="pdf-hero"
+                     style="width:100%;height:200px;object-fit:cover;border-radius:16px;margin:16px 0;box-shadow:0 8px 30px rgba(0,0,0,0.12);">
+                
+                <div class="pdf-quote-box">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+                        <div>
+                            <strong style="color:#2d1b12;font-size:20px;">${isBg ? '📋 Оферта' : '📋 Quote'}</strong>
+                            <div style="color:#6b5a5a;font-size:14px;margin-top:6px;">
+                                ${isBg ? 'Изготвена за:' : 'Prepared for:'} 
+                                <strong style="color:#e87a8a;font-size:18px;display:block;margin-top:4px;">${eventDisplay}</strong>
+                            </div>
+                            ${current.comment ? `<div style="color:#6b5a5a;font-size:13px;margin-top:4px;font-style:italic;">📝 ${current.comment}</div>` : ''}
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:13px;color:#6b5a5a;">${isBg ? 'Дата' : 'Date'}</div>
+                            <div style="font-weight:600;font-size:18px;color:#2d1b12;">${selectedDate}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="pdf-table">
+                    <thead>
+                        <tr>
+                            <th>${isBg ? 'Артикул' : 'Item'}</th>
+                            <th style="text-align:center;">${isBg ? 'К-во' : 'Qty'}</th>
+                            <th style="text-align:right;">${isBg ? 'Цена' : 'Unit Price'}</th>
+                            <th style="text-align:right;">${isBg ? 'Общо' : 'Total'}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml || `<tr><td colspan="4" style="text-align:center;color:#6b5a5a;padding:20px;">${isBg ? 'Няма избрани артикули' : 'No items selected'}</td></tr>`}
+                    </tbody>
+                </table>
+
+                <div style="display:flex;justify-content:flex-end;align-items:center;gap:24px;padding:16px 0;border-top:2px solid #f0e6e6;margin-top:8px;">
+                    <div style="font-size:16px;color:#6b5a5a;font-weight:500;">${isBg ? 'Обща сума' : 'Total Amount'}</div>
+                    <div class="pdf-total" style="font-size:36px;font-weight:800;color:#e87a8a;background:none;padding:0;margin:0;">
+                        ${grandTotal.toFixed(2)} €
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:30px;justify-content:center;padding:16px 0;margin:8px 0;border-top:1px solid #f0e6e6;border-bottom:1px solid #f0e6e6;font-size:13px;color:#6b5a5a;">
+                    <span>🎈 Балони</span>
+                    <span>🌸 Цветя</span>
+                    <span>✨ Осветление</span>
+                    <span>🎀 Декор</span>
+                </div>
+
+                <div class="pdf-footer">
+                    <p style="font-size:15px;">✨ ${isBg ? 'Благодарим ви, че избрахте' : 'Thank you for choosing'} <strong style="color:#e87a8a;">Vega Decoration</strong> ✨</p>
+                    <p style="font-size:12px;margin-top:6px;">
+                        📞 +359 894 788 078 &nbsp;|&nbsp; ✉ info@vegadecoration.com &nbsp;|&nbsp; 🌐 vegadecoration.com
+                    </p>
+                    <p style="font-size:11px;margin-top:6px;opacity:0.7;">
+                        ${isBg ? 'Създадено с' : 'Created with'} <span class="heart">❤</span> ${isBg ? 'от Vega Decoration' : 'by Vega Decoration'} • ${new Date().toLocaleDateString(isBg ? 'bg-BG' : 'en-US')}
+                    </p>
+                </div>
+            `;
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                    <head>
+                        <title>Vega Decoration – ${isBg ? 'Оферта' : 'Quote'} ${selectedDate}</title>
+                        <style>
+                            * { margin: 0; padding: 0; box-sizing: border-box; }
+                            body {
+                                font-family: 'Segoe UI', Arial, sans-serif;
+                                background: #fdf6f0;
+                                padding: 40px;
+                                max-width: 900px;
+                                margin: 0 auto;
+                                color: #2d1b12;
+                            }
+                            .pdf-header { text-align: center; padding: 20px 0 10px 0; border-bottom: 3px double #e87a8a; margin-bottom: 20px; }
+                            .pdf-header h1 { font-size: 38px; font-weight: 800; letter-spacing: 2px; color: #2d1b12; }
+                            .pdf-header h1 span { color: #e87a8a; }
+                            .pdf-header .subtitle { font-size: 14px; color: #6b5a5a; letter-spacing: 4px; text-transform: uppercase; margin-top: 4px; }
+                            .pdf-hero { width: 100%; height: 200px; object-fit: cover; border-radius: 16px; margin: 16px 0; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+                            .pdf-quote-box { background: linear-gradient(135deg, #fdf6f0, #fce8ec); border-radius: 16px; padding: 28px; margin: 16px 0; border-left: 6px solid #e87a8a; }
+                            .pdf-table { width: 100%; border-collapse: collapse; margin: 16px 0; border-radius: 12px; overflow: hidden; }
+                            .pdf-table th { background: linear-gradient(135deg, #e87a8a, #d46878); color: #fff; padding: 12px 16px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+                            .pdf-table td { padding: 10px 16px; border-bottom: 1px solid #f0e6e6; }
+                            .pdf-table tr:last-child td { border-bottom: none; }
+                            .pdf-table tr:hover { background: #fdf6f0; }
+                            .pdf-total { font-size: 36px; font-weight: 800; color: #e87a8a; }
+                            .pdf-footer { text-align: center; color: #6b5a5a; font-size: 12px; padding-top: 16px; border-top: 1px solid #f0e6e6; margin-top: 16px; }
+                            .pdf-footer .heart { color: #e87a8a; }
+                            .btn-group { text-align: center; margin-top: 30px; }
+                            .btn-group button { padding: 12px 32px; border: none; border-radius: 40px; font-size: 16px; font-weight: 600; cursor: pointer; margin: 0 8px; transition: 0.2s; }
+                            .btn-group .print-btn { background: linear-gradient(135deg, #e87a8a, #d46878); color: #fff; box-shadow: 0 4px 16px rgba(232,122,138,0.3); }
+                            .btn-group .print-btn:hover { transform: scale(1.04); }
+                            .btn-group .close-btn { background: #f0e6e6; color: #2d1b12; }
+                            .btn-group .close-btn:hover { background: #e0d6d6; }
+                            @media print {
+                                body { padding: 20px; background: #fff; }
+                                .btn-group { display: none !important; }
+                                .pdf-hero { box-shadow: none !important; }
+                                .pdf-table tr:hover { background: transparent; }
+                            }
+                            @media (max-width: 600px) {
+                                body { padding: 16px; }
+                                .pdf-header h1 { font-size: 26px; }
+                                .pdf-total { font-size: 24px; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${pdfContent}
+                        <div class="btn-group">
+                            <button class="print-btn" onclick="window.print()">🖨️ ${isBg ? 'Отпечатай / Запази като PDF' : 'Print / Save as PDF'}</button>
+                            <button class="close-btn" onclick="window.close()">✕ ${isBg ? 'Затвори' : 'Close'}</button>
+                        </div>
+                    </body>
+                </html>
+            `);
+            win.document.close();
+        });
+
+        // ===== HISTORY =====
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            const l = lang[currentLang];
+            const allEntries = [];
+
+            for (const [date, checklistsForDate] of Object.entries(checklists)) {
+                checklistsForDate.forEach((cl, idx) => {
+                    if (cl.items && cl.items.some(i => i.checked)) {
+                        allEntries.push({
+                            date: date,
+                            eventName: cl.eventName || 'Без име',
+                            comment: cl.comment || '',
+                            total: cl.total || 0,
+                            items: cl.items.filter(i => i.checked)
+                        });
+                    }
+                });
+            }
+
+            allEntries.sort((a, b) => b.date.localeCompare(a.date));
+
+            if (allEntries.length === 0) {
+                container.innerHTML = `<div class="empty-state">${l.emptyHistory}</div>`;
+                return;
+            }
+
+            container.innerHTML = allEntries.map(entry => `
+                <div class="history-item">
+                    <div class="h-info">
+                        <div class="h-date">📅 ${entry.date}</div>
+                        <div class="h-event">🏷️ ${entry.eventName}</div>
+                        ${entry.comment ? `<div class="h-comment">📝 ${entry.comment}</div>` : ''}
+                        <div style="font-size:12px;color:#6b5a5a;">
+                            ${entry.items.map(i => `${i.name} (${i.quantity || 1}x ${i.price.toFixed(2)} EUR)`).join(', ')}
+                        </div>
+                    </div>
+                    <div class="h-actions">
+                        <span style="font-weight:700;color:#e87a8a;">${entry.total.toFixed(2)} EUR</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== INIT =====
+        updateLanguage();
+        renderCalendar();
+        renderInventory();
+        renderHistory();
+    </script>
+</body>
+</html>
