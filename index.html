@@ -7,8 +7,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Vega Decoration – Party Planner & Quote Generator">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/Party-planner/manifest.json">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="/Party-planner/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Party-planner/icons/icon-192.png">
+    
     <title>🎈 Vega Decoration – Party Planner</title>
     <style>
         * {
@@ -621,6 +627,20 @@
         body.dark .install-banner button {
             color: #c084d8;
         }
+        .offline-indicator {
+            display: none;
+            background: #ff9800;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .offline-indicator.show {
+            display: inline-block;
+        }
         @media print {
             body {
                 background: #fff !important;
@@ -778,20 +798,6 @@
         .pdf-footer .heart {
             color: #e87a8a;
         }
-        .offline-indicator {
-            display: none;
-            background: #ff9800;
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .offline-indicator.show {
-            display: inline-block;
-        }
     </style>
 </head>
 <body>
@@ -882,11 +888,11 @@
     </div>
 
     <script>
-        // ===== SERVICE WORKER REGISTRATION =====
+        // ===== REGISTER SERVICE WORKER =====
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
+            navigator.serviceWorker.register('/Party-planner/sw.js')
                 .then(() => console.log('SW registered'))
-                .catch(() => console.log('SW registration failed'));
+                .catch((err) => console.log('SW registration failed:', err));
         }
 
         // ===== OFFLINE INDICATOR =====
