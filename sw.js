@@ -1,8 +1,10 @@
 const CACHE_NAME = 'vega-party-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/Party-planner/',
+  '/Party-planner/index.html',
+  '/Party-planner/manifest.json',
+  '/Party-planner/icons/icon-192.png',
+  '/Party-planner/icons/icon-512.png'
 ];
 
 // Install event - cache assets
@@ -39,7 +41,6 @@ self.addEventListener('fetch', event => {
         }
         return fetch(event.request)
           .then(response => {
-            // Cache new responses for future offline use
             if (response && response.status === 200) {
               const responseClone = response.clone();
               caches.open(CACHE_NAME).then(cache => {
@@ -49,9 +50,8 @@ self.addEventListener('fetch', event => {
             return response;
           })
           .catch(() => {
-            // Fallback for offline
             if (event.request.mode === 'navigate') {
-              return caches.match('/index.html');
+              return caches.match('/Party-planner/index.html');
             }
             return new Response('Offline - content not available', {
               status: 503,
