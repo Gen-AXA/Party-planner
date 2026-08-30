@@ -1869,11 +1869,11 @@ function renderHistory() {
     `).join('');
 }
 
-// ===== ИЗТРИВАНЕ ОТ ИСТОРИЯТА =====
+// ===== ИЗТРИВАНЕ ОТ ИСТОРИЯТА (С АВТОМАТИЧНО ОБНОВЯВАНЕ НА КАЛЕНДАРА) =====
 function deleteHistoryItem(index) {
     if (!confirm('Сигурен ли си, че искаш да изтриеш този запис от историята?')) return;
     
-    // Събираме всички записи отново
+    // 1. Събираме всички активни записи (както ги показва историята)
     const allEntries = [];
     for (const [date, checklistsForDate] of Object.entries(checklists)) {
         checklistsForDate.forEach((cl, idx) => {
@@ -1888,14 +1888,16 @@ function deleteHistoryItem(index) {
     }
     allEntries.sort((a, b) => b.date.localeCompare(a.date));
     
-    // Вземаме записа, който искаме да изтрием
+    // 2. Намираме точния запис за изтриване
     const entryToDelete = allEntries[index];
     if (!entryToDelete) return;
     
-    // Изтриваме чеклиста от конкретната дата
+    // 3. ИЗТРИВАМЕ чеклиста от главния обект `checklists`
     const dayChecklists = checklists[entryToDelete.checklistDate] || [];
     if (dayChecklists.length > 0) {
         dayChecklists.splice(entryToDelete.checklistIndex, 1);
+        
+        // Ако за този ден няма останали чеклисти, изтриваме целия ден
         if (dayChecklists.length === 0) {
             delete checklists[entryToDelete.checklistDate];
         } else {
@@ -1903,8 +1905,17 @@ function deleteHistoryItem(index) {
         }
     }
     
+    // 4. Запазваме промените
     localStorage.setItem('partyChecklists', JSON.stringify(checklists));
-    renderHistory();
+    
+    // 5. ПРЕЗАРЕЖДАМЕ ВСИЧКО, за да сме сигурни!
+    renderHistory();      // Обновява историята
+    renderCalendar();     // Обновява календара (махва червеното балонче)
+    
+    // Ако сме на датата, която изтрихме, скриваме чеклиста
+    if (selectedDate === entryToDelete.checklistDate) {
+        renderDayChecklist();
+    }
 }
 
         // ===== GALLERY =====
