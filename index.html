@@ -8,10 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Vega Decoration – Party Planner & Quote Generator">
     
-    <!-- PWA Manifest -->
     <link rel="manifest" href="/Party-planner/manifest.json">
-    
-    <!-- iOS Icons -->
     <link rel="apple-touch-icon" href="/Party-planner/icons/icon-192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/Party-planner/icons/icon-192.png">
     
@@ -812,13 +809,12 @@
                 <button class="theme-toggle" id="themeToggle">🌗</button>
                 <select class="lang-select" id="langSelect">
                     <option value="en">🇬🇧 EN</option>
-                    <option value="bg">🇧🇬 BG</option>
+                    <option value="bg" selected>🇧🇬 BG</option>
                 </select>
             </div>
         </div>
         <div class="sub" id="subtitle">🌸 Календар, чеклисти, история и PDF оферти</div>
 
-        <!-- Install Banner -->
         <div class="install-banner" id="installBanner">
             <span>📲 Инсталирай приложението</span>
             <button id="installBtn">Инсталирай</button>
@@ -1304,14 +1300,14 @@
             renderDayChecklist();
         });
 
-        // ===== PDF QUOTE =====
+        // ===== PDF QUOTE - MULTIPLE TEMPLATES =====
         document.getElementById('pdfQuoteBtn').addEventListener('click', function() {
             if (!selectedDate) return;
             const dayChecklists = checklists[selectedDate] || [];
             if (!dayChecklists.length) return;
             const current = dayChecklists[dayChecklists.length - 1];
 
-            const eventName = document.getElementById('eventNameInput').value.trim();
+            const eventName = document.getElementById('eventNameInput').value.trim() || 'Без име';
             const comment = document.getElementById('checklistComment').value.trim();
             current.eventName = eventName;
             current.comment = comment;
@@ -1337,87 +1333,238 @@
                 });
             }
 
-            const isBg = currentLang === 'bg';
-            const eventDisplay = current.eventName || (isBg ? 'Без име на събитие' : 'No event name');
-
-            const pdfContent = `
-                <div class="pdf-header">
-                    <h1>✨ <span>Vega</span> Decoration</h1>
-                    <div class="subtitle">✧ ${isBg ? 'Парти & Ивент Дизайн' : 'Party & Event Design'} ✧</div>
-                </div>
-                
-                <img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=800&h=300&fit=crop&crop=center" 
-                     alt="Elegant party arch decoration" 
-                     class="pdf-hero"
-                     style="width:100%;height:200px;object-fit:cover;border-radius:16px;margin:16px 0;box-shadow:0 8px 30px rgba(0,0,0,0.12);">
-                
-                <div class="pdf-quote-box">
-                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
-                        <div>
-                            <strong style="color:#2d1b12;font-size:20px;">${isBg ? '📋 Оферта' : '📋 Quote'}</strong>
-                            <div style="color:#6b5a5a;font-size:14px;margin-top:6px;">
-                                ${isBg ? 'Изготвена за:' : 'Prepared for:'} 
-                                <strong style="color:#e87a8a;font-size:18px;display:block;margin-top:4px;">${eventDisplay}</strong>
+            // ===== 3 ШАБЛОНА =====
+            const templates = {
+                classic: `
+                    <div class="pdf-header">
+                        <h1>✨ <span>Vega</span> Decoration</h1>
+                        <div class="subtitle">♡ ПАРТИ & ИВЕНТ ДИЗАЙН ♡</div>
+                    </div>
+                    
+                    <img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=800&h=300&fit=crop&crop=center" 
+                         alt="Elegant party arch decoration" 
+                         class="pdf-hero">
+                    
+                    <div class="pdf-quote-box">
+                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+                            <div>
+                                <strong style="color:#2d1b12;font-size:20px;">📋 Оферта</strong>
+                                <div style="color:#6b5a5a;font-size:14px;margin-top:6px;">
+                                    Изготвена за: 
+                                    <strong style="color:#e87a8a;font-size:18px;display:block;margin-top:4px;">${eventName}</strong>
+                                </div>
+                                ${comment ? `<div style="color:#6b5a5a;font-size:13px;margin-top:4px;font-style:italic;">📝 ${comment}</div>` : ''}
                             </div>
-                            ${current.comment ? `<div style="color:#6b5a5a;font-size:13px;margin-top:4px;font-style:italic;">📝 ${current.comment}</div>` : ''}
+                            <div style="text-align:right;">
+                                <div style="font-size:13px;color:#6b5a5a;">Дата</div>
+                                <div style="font-weight:600;font-size:18px;color:#2d1b12;">${selectedDate}</div>
+                            </div>
                         </div>
+                    </div>
+
+                    <table class="pdf-table">
+                        <thead>
+                            <tr>
+                                <th>Артикул</th>
+                                <th style="text-align:center;">К-во</th>
+                                <th style="text-align:right;">Цена</th>
+                                <th style="text-align:right;">Общо</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml || `<tr><td colspan="4" style="text-align:center;color:#6b5a5a;padding:20px;">Няма избрани артикули</td></tr>`}
+                        </tbody>
+                    </table>
+
+                    <div style="display:flex;justify-content:flex-end;align-items:center;gap:24px;padding:16px 0;border-top:2px solid #f0e6e6;margin-top:8px;">
+                        <div style="font-size:16px;color:#6b5a5a;font-weight:500;">Обща сума</div>
+                        <div class="pdf-total" style="font-size:36px;font-weight:800;color:#e87a8a;background:none;padding:0;margin:0;">
+                            ${grandTotal.toFixed(2)} €
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:30px;justify-content:center;padding:16px 0;margin:8px 0;border-top:1px solid #f0e6e6;border-bottom:1px solid #f0e6e6;font-size:13px;color:#6b5a5a;">
+                        <span>🎈 Балони</span>
+                        <span>🌸 Цветя</span>
+                        <span>✨ Осветление</span>
+                        <span>🎀 Декор</span>
+                    </div>
+
+                    <div class="pdf-footer">
+                        <p style="font-size:15px;">✨ Благодарим ви, че избрахте <strong style="color:#e87a8a;">Vega Decoration</strong> ✨</p>
+                        <p style="font-size:12px;margin-top:6px;">
+                            📞 +359 894 788 078 &nbsp;|&nbsp; ✉ info@vegadecoration.com &nbsp;|&nbsp; 🌐 vegadecoration.com
+                        </p>
+                        <p style="font-size:11px;margin-top:6px;opacity:0.7;">
+                            Създадено с <span class="heart">❤</span> от Vega Decoration • ${new Date().toLocaleDateString('bg-BG')}
+                        </p>
+                    </div>
+                `,
+
+                modern: `
+                    <div style="text-align:center;padding:20px 0;background:linear-gradient(135deg,#e87a8a,#c084d8);border-radius:16px;color:#fff;margin-bottom:20px;">
+                        <h1 style="font-size:38px;font-weight:800;letter-spacing:2px;color:#fff;">✨ VEGA DECORATION</h1>
+                        <div style="font-size:14px;letter-spacing:6px;text-transform:uppercase;opacity:0.9;">Парти & Ивент Дизайн</div>
+                    </div>
+                    
+                    <div style="background:#fdf6f0;border-radius:16px;padding:20px;margin:16px 0;border-left:6px solid #c084d8;">
+                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+                            <div>
+                                <div style="font-size:12px;color:#6b5a5a;text-transform:uppercase;letter-spacing:1px;">Оферта за</div>
+                                <div style="font-size:24px;font-weight:700;color:#2d1b12;margin-top:2px;">${eventName}</div>
+                                ${comment ? `<div style="color:#6b5a5a;font-size:13px;margin-top:4px;">📝 ${comment}</div>` : ''}
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:12px;color:#6b5a5a;">Дата</div>
+                                <div style="font-size:18px;font-weight:600;color:#2d1b12;">${selectedDate}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table style="width:100%;border-collapse:collapse;margin:16px 0;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#c084d8,#a868c0);color:#fff;">
+                                <th style="padding:12px 16px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Артикул</th>
+                                <th style="padding:12px 16px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">К-во</th>
+                                <th style="padding:12px 16px;text-align:right;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Цена</th>
+                                <th style="padding:12px 16px;text-align:right;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Общо</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml || `<tr><td colspan="4" style="text-align:center;color:#6b5a5a;padding:20px;background:#fff9f7;">Няма избрани артикули</td></tr>`}
+                        </tbody>
+                    </table>
+
+                    <div style="display:flex;justify-content:flex-end;align-items:center;gap:20px;padding:16px 20px;background:#fdf6f0;border-radius:12px;margin-top:8px;">
+                        <span style="font-size:14px;color:#6b5a5a;">Обща сума</span>
+                        <span style="font-size:32px;font-weight:800;color:#c084d8;">${grandTotal.toFixed(2)} €</span>
+                    </div>
+
+                    <div style="display:flex;gap:20px;justify-content:center;padding:12px;margin:12px 0;background:#fdf6f0;border-radius:12px;font-size:12px;color:#6b5a5a;">
+                        <span>🎈 Балони</span>
+                        <span>🌸 Цветя</span>
+                        <span>✨ Осветление</span>
+                        <span>🎀 Декор</span>
+                    </div>
+
+                    <div style="text-align:center;color:#6b5a5a;font-size:12px;padding-top:16px;border-top:1px solid #f0e6e6;margin-top:16px;">
+                        <p style="font-size:14px;">🌟 Благодарим за доверието! 🌟</p>
+                        <p style="margin-top:6px;">📞 +359 894 788 078 &nbsp;|&nbsp; ✉ info@vegadecoration.com</p>
+                        <p style="margin-top:4px;opacity:0.6;">Създадено с ❤️ от Vega Decoration • ${new Date().toLocaleDateString('bg-BG')}</p>
+                    </div>
+                `,
+
+                minimal: `
+                    <div style="text-align:center;padding:30px 0 20px 0;border-bottom:2px solid #e87a8a;margin-bottom:20px;">
+                        <div style="font-size:42px;font-weight:100;letter-spacing:8px;color:#2d1b12;">VEGA</div>
+                        <div style="font-size:11px;letter-spacing:6px;text-transform:uppercase;color:#6b5a5a;margin-top:4px;">Decoration</div>
+                    </div>
+                    
+                    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:16px 0;padding-bottom:12px;border-bottom:1px solid #eee;">
+                        <div>
+                            <div style="font-size:11px;text-transform:uppercase;color:#6b5a5a;letter-spacing:2px;">Оферта</div>
+                            <div style="font-size:22px;font-weight:300;color:#2d1b12;margin-top:2px;">${eventName}</div>
+                            ${comment ? `<div style="color:#6b5a5a;font-size:12px;margin-top:2px;">${comment}</div>` : ''}
+                        </div>
+                        <div style="text-align:right;font-size:13px;color:#6b5a5a;">
+                            ${selectedDate}
+                        </div>
+                    </div>
+
+                    <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+                        <thead>
+                            <tr style="border-bottom:2px solid #2d1b12;">
+                                <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">Артикул</th>
+                                <th style="padding:8px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">К-во</th>
+                                <th style="padding:8px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">Цена</th>
+                                <th style="padding:8px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6b5a5a;">Общо</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml || `<tr><td colspan="4" style="text-align:center;color:#6b5a5a;padding:20px;">Няма избрани артикули</td></tr>`}
+                        </tbody>
+                    </table>
+
+                    <div style="display:flex;justify-content:flex-end;padding:12px 0;border-top:2px solid #2d1b12;margin-top:8px;">
                         <div style="text-align:right;">
-                            <div style="font-size:13px;color:#6b5a5a;">${isBg ? 'Дата' : 'Date'}</div>
-                            <div style="font-weight:600;font-size:18px;color:#2d1b12;">${selectedDate}</div>
+                            <div style="font-size:11px;color:#6b5a5a;text-transform:uppercase;letter-spacing:1px;">Обща сума</div>
+                            <div style="font-size:32px;font-weight:300;color:#e87a8a;">${grandTotal.toFixed(2)} €</div>
                         </div>
                     </div>
-                </div>
 
-                <table class="pdf-table">
-                    <thead>
-                        <tr>
-                            <th>${isBg ? 'Артикул' : 'Item'}</th>
-                            <th style="text-align:center;">${isBg ? 'К-во' : 'Qty'}</th>
-                            <th style="text-align:right;">${isBg ? 'Цена' : 'Unit Price'}</th>
-                            <th style="text-align:right;">${isBg ? 'Общо' : 'Total'}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${itemsHtml || `<tr><td colspan="4" style="text-align:center;color:#6b5a5a;padding:20px;">${isBg ? 'Няма избрани артикули' : 'No items selected'}</td></tr>`}
-                    </tbody>
-                </table>
+                    <div style="text-align:center;color:#6b5a5a;font-size:11px;padding-top:16px;border-top:1px solid #eee;margin-top:16px;">
+                        <p>📞 +359 894 788 078 &nbsp;·&nbsp; ✉ info@vegadecoration.com</p>
+                        <p style="margin-top:4px;opacity:0.5;">vega decoration • ${new Date().toLocaleDateString('bg-BG')}</p>
+                    </div>
+                `
+            };
 
-                <div style="display:flex;justify-content:flex-end;align-items:center;gap:24px;padding:16px 0;border-top:2px solid #f0e6e6;margin-top:8px;">
-                    <div style="font-size:16px;color:#6b5a5a;font-weight:500;">${isBg ? 'Обща сума' : 'Total Amount'}</div>
-                    <div class="pdf-total" style="font-size:36px;font-weight:800;color:#e87a8a;background:none;padding:0;margin:0;">
-                        ${grandTotal.toFixed(2)} €
+            // ===== ИЗБОР НА ШАБЛОН =====
+            const templateKeys = Object.keys(templates);
+            let templateChoice = localStorage.getItem('pdfTemplate') || 'classic';
+            if (!templateKeys.includes(templateChoice)) templateChoice = 'classic';
+
+            const templateSelector = `
+                <div style="text-align:center;margin-bottom:20px;padding:12px;background:#fdf6f0;border-radius:12px;">
+                    <div style="font-size:13px;color:#6b5a5a;margin-bottom:8px;">🎨 Избери стил на офертата:</div>
+                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                        <button onclick="selectTemplate('classic')" id="btn-classic" style="padding:6px 16px;border:2px solid ${templateChoice === 'classic' ? '#e87a8a' : '#ddd'};border-radius:20px;background:${templateChoice === 'classic' ? '#e87a8a' : '#fff'};color:${templateChoice === 'classic' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
+                            🌹 Класически
+                        </button>
+                        <button onclick="selectTemplate('modern')" id="btn-modern" style="padding:6px 16px;border:2px solid ${templateChoice === 'modern' ? '#c084d8' : '#ddd'};border-radius:20px;background:${templateChoice === 'modern' ? '#c084d8' : '#fff'};color:${templateChoice === 'modern' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
+                            ✨ Модерен
+                        </button>
+                        <button onclick="selectTemplate('minimal')" id="btn-minimal" style="padding:6px 16px;border:2px solid ${templateChoice === 'minimal' ? '#2d1b12' : '#ddd'};border-radius:20px;background:${templateChoice === 'minimal' ? '#2d1b12' : '#fff'};color:${templateChoice === 'minimal' ? '#fff' : '#2d1b12'};cursor:pointer;font-size:12px;font-weight:600;transition:0.2s;">
+                            🖤 Минимален
+                        </button>
                     </div>
                 </div>
-
-                <div style="display:flex;gap:30px;justify-content:center;padding:16px 0;margin:8px 0;border-top:1px solid #f0e6e6;border-bottom:1px solid #f0e6e6;font-size:13px;color:#6b5a5a;">
-                    <span>🎈 Балони</span>
-                    <span>🌸 Цветя</span>
-                    <span>✨ Осветление</span>
-                    <span>🎀 Декор</span>
+                <div id="template-preview">
+                    ${templates[templateChoice]}
                 </div>
-
-                <div class="pdf-footer">
-                    <p style="font-size:15px;">✨ ${isBg ? 'Благодарим ви, че избрахте' : 'Thank you for choosing'} <strong style="color:#e87a8a;">Vega Decoration</strong> ✨</p>
-                    <p style="font-size:12px;margin-top:6px;">
-                        📞 +359 894 788 078 &nbsp;|&nbsp; ✉ info@vegadecoration.com &nbsp;|&nbsp; 🌐 vegadecoration.com
-                    </p>
-                    <p style="font-size:11px;margin-top:6px;opacity:0.7;">
-                        ${isBg ? 'Създадено с' : 'Created with'} <span class="heart">❤</span> ${isBg ? 'от Vega Decoration' : 'by Vega Decoration'} • ${new Date().toLocaleDateString(isBg ? 'bg-BG' : 'en-US')}
-                    </p>
+                <div style="text-align:center;margin-top:16px;">
+                    <button onclick="generatePDF()" style="padding:10px 30px;background:linear-gradient(135deg,#e87a8a,#d46878);color:#fff;border:none;border-radius:30px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(232,122,138,0.3);">
+                        📄 Генерирай PDF
+                    </button>
                 </div>
+            `;
+
+            const scriptFunctions = `
+                function selectTemplate(template) {
+                    localStorage.setItem('pdfTemplate', template);
+                    const templates = ${JSON.stringify(templates)};
+                    document.getElementById('template-preview').innerHTML = templates[template];
+                    
+                    document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                        btn.style.borderColor = '#ddd';
+                        btn.style.background = '#fff';
+                        btn.style.color = '#2d1b12';
+                    });
+                    const btn = document.getElementById('btn-' + template);
+                    if (btn) {
+                        const colors = { classic: '#e87a8a', modern: '#c084d8', minimal: '#2d1b12' };
+                        btn.style.borderColor = colors[template];
+                        btn.style.background = colors[template];
+                        btn.style.color = '#fff';
+                    }
+                }
+
+                function generatePDF() {
+                    window.print();
+                }
             `;
 
             const win = window.open('', '_blank');
             win.document.write(`
                 <html>
                     <head>
-                        <title>Vega Decoration – ${isBg ? 'Оферта' : 'Quote'} ${selectedDate}</title>
+                        <title>Vega Decoration – Избор на оферта</title>
                         <style>
                             * { margin: 0; padding: 0; box-sizing: border-box; }
                             body {
                                 font-family: 'Segoe UI', Arial, sans-serif;
                                 background: #fdf6f0;
-                                padding: 40px;
+                                padding: 30px 20px;
                                 max-width: 900px;
                                 margin: 0 auto;
                                 color: #2d1b12;
@@ -1436,15 +1583,9 @@
                             .pdf-total { font-size: 36px; font-weight: 800; color: #e87a8a; }
                             .pdf-footer { text-align: center; color: #6b5a5a; font-size: 12px; padding-top: 16px; border-top: 1px solid #f0e6e6; margin-top: 16px; }
                             .pdf-footer .heart { color: #e87a8a; }
-                            .btn-group { text-align: center; margin-top: 30px; }
-                            .btn-group button { padding: 12px 32px; border: none; border-radius: 40px; font-size: 16px; font-weight: 600; cursor: pointer; margin: 0 8px; transition: 0.2s; }
-                            .btn-group .print-btn { background: linear-gradient(135deg, #e87a8a, #d46878); color: #fff; box-shadow: 0 4px 16px rgba(232,122,138,0.3); }
-                            .btn-group .print-btn:hover { transform: scale(1.04); }
-                            .btn-group .close-btn { background: #f0e6e6; color: #2d1b12; }
-                            .btn-group .close-btn:hover { background: #e0d6d6; }
                             @media print {
                                 body { padding: 20px; background: #fff; }
-                                .btn-group { display: none !important; }
+                                button { display: none !important; }
                                 .pdf-hero { box-shadow: none !important; }
                                 .pdf-table tr:hover { background: transparent; }
                             }
@@ -1456,11 +1597,16 @@
                         </style>
                     </head>
                     <body>
-                        ${pdfContent}
-                        <div class="btn-group">
-                            <button class="print-btn" onclick="window.print()">🖨️ ${isBg ? 'Отпечатай / Запази като PDF' : 'Print / Save as PDF'}</button>
-                            <button class="close-btn" onclick="window.close()">✕ ${isBg ? 'Затвори' : 'Close'}</button>
-                        </div>
+                        ${templateSelector}
+                        <script>
+                            ${scriptFunctions}
+                            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                                btn.addEventListener('click', function() {
+                                    const template = this.id.replace('btn-', '');
+                                    selectTemplate(template);
+                                });
+                            });
+                        <\/script>
                     </body>
                 </html>
             `);
