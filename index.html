@@ -565,6 +565,11 @@
             min-height: 40px;
             font-size: 14px;
             padding: 10px 14px;
+            font-family: inherit;
+        }
+        /* Скрива AM/PM за WebKit браузъри */
+        #eventTimeInput::-webkit-datetime-edit-ampm-field {
+            display: none;
         }
         .info-section {
             display: flex;
@@ -1206,6 +1211,11 @@
             saveEventData();
         });
 
+        // Фикс за 24-часов формат
+        document.getElementById('eventTimeInput').addEventListener('focus', function() {
+            this.setAttribute('step', '60');
+        });
+
         // ===== DAY CHECKLIST =====
         function renderDayChecklist() {
             const container = document.getElementById('checklistItems');
@@ -1403,9 +1413,9 @@
                         <div style="font-size:11px;letter-spacing:6px;text-transform:uppercase;color:#6b5a5a;margin-top:4px;">Decoration</div>
                     </div>
 
-                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=300&fit=crop&crop=center" 
-                         alt="Elegant party arch decoration" 
-                         style="width:100%;height:200px;object-fit:cover;border-radius:16px;margin:16px 0;filter:grayscale(100%);box-shadow:0 8px 30px rgba(0,0,0,0.08);">
+                    <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=300&fit=crop&crop=center" 
+                         alt="Elegant black and white party arch decoration" 
+                         style="width:100%;height:200px;object-fit:cover;border-radius:16px;margin:16px 0;box-shadow:0 8px 30px rgba(0,0,0,0.08);">
                     
                     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin:16px 0;padding:16px;background:#f9f9f9;border-radius:12px;">
                         <div>
