@@ -1822,49 +1822,90 @@
         });
 
         // ===== HISTORY =====
-        function renderHistory() {
-            const container = document.getElementById('historyList');
-            const l = lang[currentLang];
-            const allEntries = [];
+function renderHistory() {
+    const container = document.getElementById('historyList');
+    const l = lang[currentLang];
+    const allEntries = [];
 
-            for (const [date, checklistsForDate] of Object.entries(checklists)) {
-                checklistsForDate.forEach((cl, idx) => {
-                    if (cl.items && cl.items.some(i => i.checked)) {
-                        allEntries.push({
-                            date: date,
-                            eventTime: cl.eventTime || '',
-                            eventName: cl.eventName || 'Без име',
-                            comment: cl.comment || '',
-                            total: cl.total || 0,
-                            items: cl.items.filter(i => i.checked)
-                        });
-                    }
+    for (const [date, checklistsForDate] of Object.entries(checklists)) {
+        checklistsForDate.forEach((cl, idx) => {
+            if (cl.items && cl.items.some(i => i.checked)) {
+                allEntries.push({
+                    date: date,
+                    eventTime: cl.eventTime || '',
+                    eventName: cl.eventName || 'Без име',
+                    comment: cl.comment || '',
+                    total: cl.total || 0,
+                    items: cl.items.filter(i => i.checked),
+                    checklistIndex: idx,
+                    checklistDate: date
                 });
             }
+        });
+    }
 
-            allEntries.sort((a, b) => b.date.localeCompare(a.date));
+    allEntries.sort((a, b) => b.date.localeCompare(a.date));
 
-            if (allEntries.length === 0) {
-                container.innerHTML = `<div class="empty-state">${l.emptyHistory}</div>`;
-                return;
-            }
+    if (allEntries.length === 0) {
+        container.innerHTML = `<div class="empty-state">${l.emptyHistory}</div>`;
+        return;
+    }
 
-            container.innerHTML = allEntries.map(entry => `
-                <div class="history-item">
-                    <div class="h-info">
-                        <div class="h-date">📅 ${entry.date} ${entry.eventTime ? '🕐 ' + entry.eventTime : ''}</div>
-                        <div class="h-event">🏷️ ${entry.eventName}</div>
-                        ${entry.comment ? `<div class="h-comment">📝 ${entry.comment}</div>` : ''}
-                        <div style="font-size:12px;color:#6b5a5a;">
-                            ${entry.items.map(i => `${i.name} (${i.quantity || 1}x ${i.price.toFixed(2)} EUR)`).join(', ')}
-                        </div>
-                    </div>
-                    <div class="h-actions">
-                        <span style="font-weight:700;color:#e87a8a;">${entry.total.toFixed(2)} EUR</span>
-                    </div>
+    container.innerHTML = allEntries.map((entry, index) => `
+        <div class="history-item" style="position:relative;">
+            <div class="h-info">
+                <div class="h-date">📅 ${entry.date} ${entry.eventTime ? '🕐 ' + entry.eventTime : ''}</div>
+                <div class="h-event">🏷️ ${entry.eventName}</div>
+                ${entry.comment ? `<div class="h-comment">📝 ${entry.comment}</div>` : ''}
+                <div style="font-size:12px;color:#6b5a5a;">
+                    ${entry.items.map(i => `${i.name} (${i.quantity || 1}x ${i.price.toFixed(2)} EUR)`).join(', ')}
                 </div>
-            `).join('');
+            </div>
+            <div class="h-actions">
+                <span style="font-weight:700;color:#e87a8a;">${entry.total.toFixed(2)} EUR</span>
+                <button class="btn-danger" onclick="deleteHistoryItem(${index})" style="font-size:12px;padding:4px 12px;">🗑️ Изтрий</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== ИЗТРИВАНЕ ОТ ИСТОРИЯТА =====
+function deleteHistoryItem(index) {
+    if (!confirm('Сигурен ли си, че искаш да изтриеш този запис от историята?')) return;
+    
+    // Събираме всички записи отново
+    const allEntries = [];
+    for (const [date, checklistsForDate] of Object.entries(checklists)) {
+        checklistsForDate.forEach((cl, idx) => {
+            if (cl.items && cl.items.some(i => i.checked)) {
+                allEntries.push({
+                    date: date,
+                    checklistIndex: idx,
+                    checklistDate: date
+                });
+            }
+        });
+    }
+    allEntries.sort((a, b) => b.date.localeCompare(a.date));
+    
+    // Вземаме записа, който искаме да изтрием
+    const entryToDelete = allEntries[index];
+    if (!entryToDelete) return;
+    
+    // Изтриваме чеклиста от конкретната дата
+    const dayChecklists = checklists[entryToDelete.checklistDate] || [];
+    if (dayChecklists.length > 0) {
+        dayChecklists.splice(entryToDelete.checklistIndex, 1);
+        if (dayChecklists.length === 0) {
+            delete checklists[entryToDelete.checklistDate];
+        } else {
+            checklists[entryToDelete.checklistDate] = dayChecklists;
         }
+    }
+    
+    localStorage.setItem('partyChecklists', JSON.stringify(checklists));
+    renderHistory();
+}
 
         // ===== GALLERY =====
         let galleryImages = JSON.parse(localStorage.getItem('galleryImages')) || [];
